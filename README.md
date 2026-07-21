@@ -36,6 +36,30 @@ cordova plugin add https://github.com/EYALIN/community-cordova-plugin-barcodesca
 - iOS
 - Browser (limited support)
 
+### iOS: Apple Silicon simulator limitation
+
+The iOS scanner is built on **Google ML Kit**, whose binary frameworks (`MLImage`,
+`MLKitCommon`, `MLKitVision`, `MLKitBarcodeScanning`) do **not** ship an `arm64`
+*iOS-simulator* slice. To keep the project linkable, CocoaPods automatically adds
+`EXCLUDED_ARCHS[sdk=iphonesimulator*] = arm64` to the generated xcconfig files. As a
+result, on Apple Silicon Macs Xcode only offers the **x86_64 (Rosetta) simulator**
+destination; native `arm64` simulators are unavailable. Removing the `EXCLUDED_ARCHS`
+entries surfaces the arm64 destinations but then fails at link time
+(`Building for 'iOS-simulator', but linking in object file built for 'iOS'`) because
+the ML Kit binaries lack that slice.
+
+**This is an upstream ML Kit limitation, not a plugin bug.** Recommended options:
+
+- **Run on a physical device** — fully supported (arm64 device slices are present).
+- **Use the x86_64 "Rosetta" simulator** — select the available `Any iOS Simulator
+  Device (x86_64)` destination; scanning works there.
+
+A future migration of the iOS implementation to Apple's **Vision** framework (which
+provides native QR / PDF417 detection without the ML Kit binary dependency) is under
+consideration and would remove this constraint. See
+[CocoaPods#10978](https://github.com/CocoaPods/CocoaPods/issues/10978) for the
+upstream context.
+
 ## Usage
 
 ### Basic Scan
