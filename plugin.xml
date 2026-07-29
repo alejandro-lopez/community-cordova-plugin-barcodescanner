@@ -36,9 +36,9 @@
         </config-file>
 
         <preference name="CAMERA_USAGE_DESCRIPTION" default="This app requires camera access to scan barcodes and QR codes"/>
-        <config-file target="App/App-Info.plist" parent="NSCameraUsageDescription">
+        <!--<config-file target="App/App-Info.plist" parent="NSCameraUsageDescription">
             <string>$CAMERA_USAGE_DESCRIPTION</string>
-        </config-file>
+        </config-file>-->
 
         <header-file src="src/ios/CDVBarcodeScanner.h"/>
         <source-file src="src/ios/CDVBarcodeScanner.m"/>
